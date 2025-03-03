@@ -23,6 +23,26 @@ void PillulierCharacteristicCallbacks::onNotify(BLECharacteristic *pCharacterist
 
 void HandleConfigChanged(std::string value){
     Serial.println("Received Value: ");
+    Serial.println(value.c_str());
+    if (value.length != 21)
+    {
+        Serial.println("Invalid config");
+        return;
+    }
+    //7 days * 3 times
+    //First 3 chars are for Monday, etc
+    //First char is for morning, second for afternoon, third for evening
+    //0 means no pill, 1 means pill
+    //convert to array of 7 days * 3 bools
+    bool config[7][3];
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            config[i][j] = value[i * 3 + j] == '1';
+            Serial.println(config[i][j]);
+        }
+    }
 } 
 
 void PillulierCharacteristicCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
