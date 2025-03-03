@@ -4,7 +4,7 @@
 
 #define SERVICE_UUID "e85bec35-8807-48de-8269-d9c44052f6c9"
 #define CHARACTERISTIC_UUID_PILS_TAKEN "1fec0cbe-51d0-49ed-b94f-75bd29b503d8"
-#define CHARACTERISTIC_UUID_SET_CONFIG "633f5eb7-1910-4e76-960a-fc2f627e4083";
+#define CHARACTERISTIC_UUID_SET_CONFIG "633f5eb7-1910-4e76-960a-fc2f627e4083"
 #define BLE_SERVER_NAME "ESP32-Pilulier"
 
 class PillulierServerCallback: public BLEServerCallbacks {
@@ -17,6 +17,7 @@ class PillulierServerCallback: public BLEServerCallbacks {
 class PillulierCharacteristicCallbacks : public BLECharacteristicCallbacks {
     public:
         void onNotify(BLECharacteristic* pCharacteristic);
+        void onWrite(BLECharacteristic* pCharacteristic);
 };
 
 class BLEManager {

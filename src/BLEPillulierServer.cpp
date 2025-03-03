@@ -21,11 +21,17 @@ void PillulierCharacteristicCallbacks::onNotify(BLECharacteristic *pCharacterist
         return;
 }
 
+void HandleConfigChanged(std::string value){
+    Serial.println("Received Value: ");
+} 
 
-void PilulierConfigCallback::onNotify(BLECharacteristic *pCharacteristic) {
-    if(!deviceConnected)
-        return;
+void PillulierCharacteristicCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
+    if(pCharacteristic->getUUID().equals(BLEUUID(CHARACTERISTIC_UUID_SET_CONFIG))){
+        std::string value = pCharacteristic->getValue();
+        HandleConfigChanged(value);
+    }
 }
+
 
 void BLEManager::init_server_com(){
 
@@ -58,8 +64,8 @@ void BLEManager::init_server_com(){
     );
 
     // Set Callback for Config Characteristic
-    pConfigCharacteristic->setCallbacks(new PilulierConfigCallback());
-    pConfigCharacteristic.setValue("{ \"TODO\": \"todo\" }");
+    pConfigCharacteristic->setCallbacks(new PillulierCharacteristicCallbacks());
+    pConfigCharacteristic->setValue("{ \"TODO\": \"todo\" }");
 
     // Add Characteristic to Service
     pilsService->start();
