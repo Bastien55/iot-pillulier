@@ -24,7 +24,7 @@ void PillulierCharacteristicCallbacks::onNotify(BLECharacteristic *pCharacterist
 void HandleConfigChanged(std::string value){
     Serial.println("Received Value: ");
     Serial.println(value.c_str());
-    if (value.length != 21)
+    if (value.length() != 21)
     {
         Serial.println("Invalid config");
         return;
@@ -51,7 +51,6 @@ void PillulierCharacteristicCallbacks::onWrite(BLECharacteristic *pCharacteristi
         HandleConfigChanged(value);
     }
 }
-
 
 void BLEManager::init_server_com(){
 
