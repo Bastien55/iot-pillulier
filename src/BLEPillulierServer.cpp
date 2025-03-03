@@ -19,7 +19,12 @@ void PillulierServerCallback::onDisconnect(BLEServer* pServer){
 void PillulierCharacteristicCallbacks::onNotify(BLECharacteristic *pCharacteristic) {
     if(!deviceConnected)
         return;
-    
+}
+
+
+void PilulierConfigCallback::onNotify(BLECharacteristic *pCharacteristic) {
+    if(!deviceConnected)
+        return;
 }
 
 void BLEManager::init_server_com(){
@@ -44,6 +49,17 @@ void BLEManager::init_server_com(){
     // Create BLE Descriptor (CCCD - Client Characteristic Configuration Descriptor)
     configurationDescriptor.setValue("Pils taken");
     pPillsCharacteristic->addDescriptor(&configurationDescriptor);
+
+    //Config Characteristic
+    BLECharacteristic *pConfigCharacteristic = pilsService->createCharacteristic(
+        CHARACTERISTIC_UUID_SET_CONFIG,
+        BLECharacteristic::PROPERTY_READ | 
+        BLECharacteristic::PROPERTY_WRITE
+    );
+
+    // Set Callback for Config Characteristic
+    pConfigCharacteristic->setCallbacks(new PilulierConfigCallback());
+    pConfigCharacteristic.setValue("{ \"TODO\": \"todo\" }");
 
     // Add Characteristic to Service
     pilsService->start();
