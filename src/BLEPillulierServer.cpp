@@ -1,7 +1,10 @@
 #include "BLEPillulierServer.h"
+#include "DayModel.h"
 
 bool deviceConnected = false;
 BLEDescriptor configurationDescriptor(BLEUUID((uint16_t)0x2902));
+
+DayModel dayInfos[7];
 
 BLECharacteristic *pPillsCharacteristic;
 
@@ -24,36 +27,20 @@ void PillulierCharacteristicCallbacks::onNotify(BLECharacteristic *pCharacterist
 void HandleConfigChanged(std::string value){
     Serial.println("Received Value: ");
     Serial.println(value.c_str());
-    if (value.length() != 21)
-    {
-        Serial.println("Invalid config");
-        return;
-    }
-    //7 days * 3 times
-    //First 3 chars are for Monday, etc
-    //First char is for morning, second for afternoon, third for evening
-    //0 means no pill, 1 means pill
-    //convert to array of 7 days * 3 bools
-    bool config[7][3];
-    for (int i = 0; i < 7; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            config[i][j] = value[i * 3 + j] == '1';
-            Serial.println(config[i][j]);
-        }
-    }
+
+    ScheduleParser::parseDayPeriods(value.c_str(), dayInfos);
 } 
 
 void PillulierCharacteristicCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
+    Serial.println("Message reçu");
     if(pCharacteristic->getUUID().equals(BLEUUID(CHARACTERISTIC_UUID_SET_CONFIG))){
+        Serial.println("UUID Identique");
         std::string value = pCharacteristic->getValue();
         HandleConfigChanged(value);
     }
 }
 
 void BLEManager::init_server_com(){
-
     BLEDevice::init(BLE_SERVER_NAME);
 
     BLEServer *pServer = BLEDevice::createServer();

@@ -1,19 +1,15 @@
 #include "BLEPillulierServer.h"
 #include "HX711.h"
-#include "time.h"
+#include "DayModel.h"
 
 // HX711 circuit wir
 #define LOADCELL_DOUT_PIN 2 
 #define LOADCELL_SCK_PIN 3
 #define TARE_BUTTON 6
 
-#define LED_LUNDI 1
-#define LED_MARDI 4
-#define LED_MERCREDI 5
-#define LED_JEUDI 9
-#define LED_VENDREDI 8
-#define LED_SAMEDI 7
-#define LED_DIMANCHE 44
+#define LED_MATIN 1
+#define LED_APREM 4
+#define LED_SOIR 5
 
 HX711 scale;
 BLEManager bleManager;
@@ -48,26 +44,18 @@ void setup() {
   
   pinMode(TARE_BUTTON, INPUT_PULLUP);
 
-  pinMode(LED_LUNDI, OUTPUT);
-  pinMode(LED_MARDI, OUTPUT);
-  pinMode(LED_MERCREDI, OUTPUT);
-  pinMode(LED_JEUDI, OUTPUT);
-  pinMode(LED_VENDREDI, OUTPUT);
-  pinMode(LED_SAMEDI, OUTPUT);
-  pinMode(LED_DIMANCHE, OUTPUT);
+  pinMode(LED_MATIN, OUTPUT);
+  pinMode(LED_APREM, OUTPUT);
+  pinMode(LED_SOIR, OUTPUT);
 
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
   scale.set_scale(712.66);
   scale.tare();
 
-  digitalWrite(LED_LUNDI, LOW);
-  digitalWrite(LED_MARDI, LOW);
-  digitalWrite(LED_MERCREDI, LOW);
-  digitalWrite(LED_JEUDI, LOW);
-  digitalWrite(LED_VENDREDI, LOW);
-  digitalWrite(LED_SAMEDI, LOW);
-  digitalWrite(LED_DIMANCHE, LOW);
+  digitalWrite(LED_MATIN, HIGH);
+  digitalWrite(LED_APREM, HIGH);
+  digitalWrite(LED_SOIR, HIGH);
 
   bleManager.init_server_com();
 }
